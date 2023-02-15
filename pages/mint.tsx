@@ -19,7 +19,6 @@ const fields: RDFField<FormState>[] = [
     options: {
       required: 'Give the license a title'
     }
-
   },
   {
     type: 'text',
@@ -27,7 +26,7 @@ const fields: RDFField<FormState>[] = [
     label: 'Photographer',
     // placeholder: '',
     options: {
-      required: 'Give the license a title'
+      required: 'Photographer is required'
     }
   },
   {
