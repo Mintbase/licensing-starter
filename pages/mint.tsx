@@ -1,7 +1,10 @@
+import { WalletConnectButton } from '@/components/WalletConnectButton'
 import Head from 'next/head'
 import Link from 'next/link'
 import { RDF, RDFField, useRDF } from 'radix-declarative-form'
 import { useState } from 'react'
+import { execute, depositStorage, mint, list } from '@mintbase-js/sdk'
+import { useWallet } from '@mintbase-js/react'
 
 type FormState = {
   title: string
@@ -9,6 +12,8 @@ type FormState = {
   photographer: string
   media: File
 }
+
+type Reference = {id: string, media_hash: string}
 
 const fields: RDFField<FormState>[] = [
   {
@@ -44,9 +49,12 @@ const fields: RDFField<FormState>[] = [
 ]
 
 export default function Mint() {
+  const contract = process?.env?.NEXT_PUBLIC_CONTRACT_ADDRESS
+  const { selector, activeAccountId } = useWallet();
   const [dataInFlight, setDataInFlight] = useState(false);
   const form = useRDF(fields, async (fd: FormData, state: FormState) => {
     setDataInFlight(true);
+    const wallet = await selector.wallet();
     try {
       // set JSON attributes from from state
       fd.set('attributes', JSON.stringify([
@@ -67,8 +75,18 @@ export default function Mint() {
         body: fd
       });
 
-      const result = await postRequest.json();
-      console.log('created arweave hash, ready 2 mint!', result);
+      const reference: Reference = await postRequest.json();
+      console.log('created arweave hash, ready 2 mint!', reference);
+      
+      const nextTokenIdRequest = await fetch(`https://surface-meta-testnet-z3w7d7dnea-ew.a.run.app/${contract}/next_token_id`, {
+        method: 'GET',
+        headers: { 'mb-api-key': 'licensing-example' },
+      });
+
+      const nextTokenId = Number(await nextTokenIdRequest.text());
+      console.log('got next token id: ', nextTokenId);
+
+      handleMint(reference, activeAccountId as string, wallet, nextTokenId)
       setDataInFlight(false);
     } catch (e) {
       setDataInFlight(false);
@@ -86,6 +104,7 @@ export default function Mint() {
       </Head>
       <main className="main">
         <Link href="/">back home</Link>
+        <WalletConnectButton/>
         <h1>Mint a license</h1>
         <RDF<FormState>
           form={form}
@@ -96,4 +115,29 @@ export default function Mint() {
       </main>
     </>
   )
+}
+
+async function handleMint(reference: Reference, activeAccountId: string, wallet: any, nextTokenId: number) {
+
+  if (reference) {
+    const mintCall = mint({
+      metadata: {reference: reference.id, media: reference.media_hash},
+      ownerId: activeAccountId,
+      options: {
+        royaltyPercentage: 0.1,
+        splits: {
+          'example1.testnet': 0.4,
+          'example2.testnet': 0.3,
+          'example3.testnet': 0.3,
+        }
+      }
+    })
+    const depositStorageCall = depositStorage({})
+    const listCall = list({
+      price: "5",
+      tokenId: (nextTokenId + 1).toString()
+    })
+
+    await execute({ wallet }, mintCall, depositStorageCall, listCall)
+  }
 }
