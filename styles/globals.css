@@ -106,3 +106,34 @@ h1 {
     color-scheme: dark;
   }
 }
+
+.field-royalties .instructions {
+  font-size: 12px;
+}
+
+.field-royalties .add-item-button {
+  margin: 5px 0 0 0;
+}
+.table-wrap {
+  margin-top: 20px;
+}
+.input-price {
+  width: 55px;
+}
+
+.table-item-wrap
+.input-key-percent {
+  width: 45px !important;
+}
+.table-item-wrap
+.input-key-account {
+  width: calc(100% - 45px) !important;
+}
+
+.label-percent {
+  width: 80px !important;
+}
+
+.table-wrap .table-headings {
+  font-size: 13px;
+}

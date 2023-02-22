@@ -1,9 +1,9 @@
 import type { AppProps } from "next/app";
 import { WalletContextProvider } from "@mintbase-js/react";
 import { Poppins } from "@next/font/google";
-import "@/styles/globals.css";
 import "@near-wallet-selector/modal-ui/styles.css";
 import "radix-declarative-form/rdf.css";
+import "@/styles/globals.css";
 import { mbjs } from "@mintbase-js/sdk";
 import {
   ApolloClient,
