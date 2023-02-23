@@ -1,9 +1,5 @@
-import { WalletConnectButton } from "@/components/WalletConnectButton";
 import Head from "next/head";
 import Link from "next/link";
-import { RDF, useRDF } from "radix-declarative-form";
-import { FormFields, useFormFields } from "@/hooks/useFormFields";
-import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { Header } from "@/components/Header";
 import { useWallet } from "@mintbase-js/react";
 import { MintingForm } from "@/components/MintingForm";

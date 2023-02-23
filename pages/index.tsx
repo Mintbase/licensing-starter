@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Gallery } from "@/components/Gallery";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -17,11 +18,15 @@ export default function Home() {
       </Head>
       <Header />
       <main className={"main"}>
-        <h1>
-          This will be the homepage. For now, go{" "}
-          <Link href={`/mint`}>mint</Link> a license!
-        </h1>
+        <div className="hero">
+          <div className="hero-center">
+            <h1>The future of creative licensing.</h1>
+            <h3>This is a demonstration of web3 based image licensing</h3>
+            <p><span>THIS IS NOT AN ACTUAL IMAGE LICENSING PRODUCT.<br />IT IS FOR DEMO PURPOSES ONLY.</span></p>
+          </div>
+        </div>
         <Gallery />
+        <Footer />
       </main>
     </>
   );
