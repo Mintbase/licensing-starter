@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { Gallery } from "@/components/Gallery";
+import { Header } from "@/components/Header";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Header />
       <main className={"main"}>
         <h1>
           This will be the homepage. For now, go{" "}

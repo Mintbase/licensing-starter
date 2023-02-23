@@ -4,11 +4,12 @@ import Link from "next/link";
 import { RDF, useRDF } from "radix-declarative-form";
 import { FormFields, useFormFields } from "@/hooks/useFormFields";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
+import { Header } from "@/components/Header";
+import { useWallet } from "@mintbase-js/react";
+import { MintingForm } from "@/components/MintingForm";
 
 export default function Mint() {
-  const { fields } = useFormFields();
-  const { isInFlight, handleSubmit } = useFormSubmit();
-  const form = useRDF(fields, handleSubmit);
+  const { activeAccountId } = useWallet();
 
   return (
     <>
@@ -18,16 +19,13 @@ export default function Mint() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Header />
       <main className="main">
         <Link href="/">back home</Link>
-        <WalletConnectButton />
-        <h1>Mint a license</h1>
-        <RDF<FormFields>
-          form={form}
-          isInFlight={isInFlight}
-          submitButtonLabel="Create License"
-          submitButtonLabelInFlight="Creating..."
-        />
+        {activeAccountId
+          ? <MintingForm />
+          : <div>Please connect a wallet to continue</div>
+        }
       </main>
     </>
   );

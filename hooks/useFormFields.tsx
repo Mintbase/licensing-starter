@@ -36,6 +36,12 @@ export const useFormFields = (): UseFormFieldsReturn => {
         },
       },
       {
+        type: "media",
+        name: "media",
+        label: "Upload Image Preview",
+        helpText: "Images must be less than 30MB",
+      },
+      {
         type: "text",
         name: "photographer",
         label: "Photographer",
@@ -69,12 +75,6 @@ export const useFormFields = (): UseFormFieldsReturn => {
         name: "description",
         label: "Describe this work",
         placeholder: 'An optional description'
-      },
-      {
-        type: "media",
-        name: "media",
-        label: "Upload Image Preview",
-        helpText: "Images must be less than 30MB",
       },
       {
         type: "select",
