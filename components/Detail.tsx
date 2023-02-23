@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useToken } from "@/hooks/useToken";
 import { useWallet } from "@mintbase-js/react";
 import { buy, execute } from "@mintbase-js/sdk";
@@ -18,10 +19,12 @@ export const Detail = () => {
     execute({ wallet }, buyCall);
   };
 
+  console.log(data);
+
   if (loading) return <h1>Loading...</h1>;
 
   return (
-    <main className={"main"}>
+    <main className={"detail-view"}>
       <h1>{data?.title}</h1>
       <img src={data?.media} alt="" />
       <div>

@@ -5,8 +5,11 @@ import Link from "next/link";
 import { Loader } from "./Loader";
 
 export const Gallery = () => {
-  const { data, loading } = useListed();
+  const { data, loading, error } = useListed();
 
+  console.log(data)
+
+  if (error) return <div>{error.toString()}</div>
   if (loading) return <Loader />
 
   const breakpointColumnsObj = {

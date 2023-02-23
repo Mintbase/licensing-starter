@@ -28,6 +28,7 @@ const query = gql`
       title
       token_id
       metadata_id
+      reference_blob
     }
   }
 `;
