@@ -95,6 +95,10 @@ export const useFormFields = (): UseFormFieldsReturn => {
         default: '1',
         observe: true,
         HelpText: (state?: Partial<FormFields>) => {
+
+          console.log('cals', parseUsableBasisPointAdjustedRoyalty(state?.royalties))
+
+
           if (state?.price) {
             return <span>~ ${(state.price * nearPrice).toFixed(2)} USD</span>
           }

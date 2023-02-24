@@ -14,7 +14,7 @@ export const Gallery = () => {
 
   const breakpointColumnsObj = {
     default: 4,
-    1100: 3,
+    1000: 3,
     700: 2,
     500: 1
   }
@@ -28,8 +28,11 @@ export const Gallery = () => {
       >
         {data.map(function (data: any) {
           return (
-            <div key={data?.token_id}>
+            <div key={data?.token_id} className="photo-tile">
               <Link href={`/${data?.token_id}`}>
+                <div className="pop-info">
+                  <h2>{data.reference_blob.photographer}</h2>
+                </div>
                 <img src={data.media} alt="" className="image" />
               </Link>
             </div>

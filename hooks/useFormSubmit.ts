@@ -131,8 +131,20 @@ export const parseUsableBasisPointAdjustedRoyalty = (
     const splits: Record<string, number> = usableSplits.reduce((build, sp) => ({
       ...build,
       // from the percentage, recompute usable split as % of the total so it adds up to 10k
-      [sp.account]: Number((((sp.basis * 10_000) / percentage) / 10_000).toFixed(2))
+      [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
     }), {})
+
+
+    // compute sum and adjust the first split upward as needed
+    const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
+    const gap = 10_000 - basisPointsSum
+
+    if (gap > 0) {
+      console.log('fill the gap!')
+      const firstKey = Object.keys(splits)[0]
+      splits[firstKey] += gap
+    }
+
 
     // no need to fill gaps for royalties only
     // const remainderToMinter = 10_000 - percentage
@@ -144,8 +156,10 @@ export const parseUsableBasisPointAdjustedRoyalty = (
     //     splits[minter] = remainderToMinter;
     //   }
     // }
+
+
     return {
       splits,
-      percentage: Number((percentage / 10_000).toFixed(2)) //: percentage / basisMultiplier  // re-adjust for royalty total
+      percentage //: percentage / basisMultiplier  // re-adjust for royalty total
     };
 }
