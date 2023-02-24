@@ -21,7 +21,7 @@ export default function Home() {
           <div className="hero-center">
             <h1>The future of creative licensing.</h1>
             <h3>This is a demonstration of web3 based image licensing</h3>
-            <p><span>THIS IS NOT AN ACTUAL IMAGE LICENSING PRODUCT.<br />IT IS FOR DEMO PURPOSES ONLY.</span></p>
+            <p><span>THIS IS NOT AN ACTUAL IMAGE LICENSING PRODUCT.<br />IT IS FOR DEMONSTRATION PURPOSES ONLY.</span></p>
           </div>
         </div>
         <Gallery />

@@ -2,6 +2,6 @@
 
 export const Loader = () => (
   <div className="loading">
-    The waiting is the hardest part
+    Oh The waiting, is the hardest part - Tom Petty
   </div>
 )

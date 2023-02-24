@@ -10,12 +10,12 @@ export const MintingForm = () => {
   return (
     <div className="minting-form">
       <h1>Mint a license</h1>
-        <RDF<FormFields>
-          form={form}
-          isInFlight={isInFlight}
-          submitButtonLabel="Create License"
-          submitButtonLabelInFlight="Creating..."
-        />
+      <RDF<FormFields>
+        form={form}
+        isInFlight={isInFlight}
+        submitButtonLabel="Create License"
+        submitButtonLabelInFlight="Creating..."
+      />
     </div>
   )
 }

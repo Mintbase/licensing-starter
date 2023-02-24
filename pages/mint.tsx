@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Header } from "@/components/Header";
 import { useWallet } from "@mintbase-js/react";
 import { MintingForm } from "@/components/MintingForm";
+import { PromptLogin } from "@/components/PromptLogin";
 
 export default function Mint() {
   const { activeAccountId } = useWallet();
@@ -17,10 +18,9 @@ export default function Mint() {
       </Head>
       <Header />
       <main className="main">
-        <Link href="/">back home</Link>
         {activeAccountId
           ? <MintingForm />
-          : <div>Please connect a wallet to continue</div>
+          : <PromptLogin />
         }
       </main>
     </>
