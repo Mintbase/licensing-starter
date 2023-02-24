@@ -3,11 +3,15 @@ import Masonry from "react-masonry-css";
 import { useListed } from "../hooks/useListed";
 import Link from "next/link";
 import { Loader } from "./Loader";
+import { LicenseToken } from "@/hooks/useToken";
 
-export const Gallery = () => {
-  const { data, loading, error } = useListed();
+type GalleryProps = {
+  images: LicenseToken[]
+  loading: boolean
+  error: unknown
+}
 
-  console.log(data)
+export const Gallery = ({ images, loading, error }: GalleryProps) => {
 
   if (error) return <div>{error.toString()}</div>
   if (loading) return <Loader />
@@ -26,7 +30,7 @@ export const Gallery = () => {
         className="my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
-        {data.map(function (data: any) {
+        {images.map(function (data: any) {
           return (
             <div key={data?.token_id} className="photo-tile">
               <Link href={`/${data?.token_id}`}>

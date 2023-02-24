@@ -1,7 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { utils } from 'near-api-js'
 
-type LicenseToken = {
+export type LicenseToken = {
   nearPrice: string
   yoctoPrice: string
   media: string

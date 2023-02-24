@@ -134,29 +134,15 @@ export const parseUsableBasisPointAdjustedRoyalty = (
       [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
     }), {})
 
-
     // compute sum and adjust the first split upward as needed
     const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
     const gap = 10_000 - basisPointsSum
 
+    // fill any gaps due to rounding
     if (gap > 0) {
-      console.log('fill the gap!')
       const firstKey = Object.keys(splits)[0]
       splits[firstKey] += gap
     }
-
-
-    // no need to fill gaps for royalties only
-    // const remainderToMinter = 10_000 - percentage
-    // if (remainderToMinter > 0) {
-    //   if (splits[minter]) {
-    //     // add the remainder to existing share
-    //     splits[minter] += remainderToMinter;
-    //   } else {
-    //     splits[minter] = remainderToMinter;
-    //   }
-    // }
-
 
     return {
       splits,

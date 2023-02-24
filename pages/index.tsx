@@ -2,8 +2,10 @@ import Head from "next/head";
 import { Gallery } from "@/components/Gallery";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { useListed } from "@/hooks/useListed";
 
 export default function Home() {
+  const { data, loading, error } = useListed();
   return (
     <>
       <Head>
@@ -24,7 +26,7 @@ export default function Home() {
             <p><span>THIS IS NOT AN ACTUAL IMAGE LICENSING PRODUCT.<br />IT IS FOR DEMONSTRATION PURPOSES ONLY.</span></p>
           </div>
         </div>
-        <Gallery />
+        <Gallery images={data} error={error} loading={loading} />
         <Footer />
       </main>
     </>
