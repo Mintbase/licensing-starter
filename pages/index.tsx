@@ -21,8 +21,8 @@ export default function Home() {
       <main className={"main"}>
         <div className="hero">
           <div className="hero-center">
-            <h1>The future of creative licensing.</h1>
-            <h3>This is a demonstration of web3 based image licensing</h3>
+            <h1>Transparent + instant royalties.</h1>
+            <h3>Demo the future of creative licensing built on Mintbase.</h3>
             <p><span>THIS IS NOT AN ACTUAL IMAGE LICENSING PRODUCT.<br />IT IS FOR DEMONSTRATION PURPOSES ONLY.</span></p>
           </div>
         </div>
