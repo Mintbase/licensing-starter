@@ -43,8 +43,6 @@ export const useToken = (token_id: string): TokenHookReturn => {
     }
   }
 
-  console.log('fml', token);
-
   const ref = data?.reference_blob;
 
   const yoctoPrice = token?.listings

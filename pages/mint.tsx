@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { useWallet } from "@mintbase-js/react";
 import { MintingForm } from "@/components/MintingForm";
 import { PromptLogin } from "@/components/PromptLogin";
+import { Footer } from "@/components/Footer";
 
 export default function Mint() {
   const { activeAccountId } = useWallet();
@@ -23,6 +24,7 @@ export default function Mint() {
           : <PromptLogin />
         }
       </main>
+      <Footer />
     </>
   );
 }
