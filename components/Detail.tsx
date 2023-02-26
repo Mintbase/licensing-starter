@@ -16,6 +16,7 @@ export const Detail = () => {
     const buyCall = buy({
       price: token.yoctoPrice,
       tokenId: id as string,
+      affiliateAccount: process.env.NEXT_PUBLIC_AFFILIATE || 'mintbus.testnet'
     });
     execute({ wallet }, buyCall);
   };
