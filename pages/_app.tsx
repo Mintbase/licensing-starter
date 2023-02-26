@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import type { AppProps } from "next/app";
 import { WalletContextProvider } from "@mintbase-js/react";
 import { Poppins } from "@next/font/google";
@@ -37,6 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
           --poppins: ${poppins.style.fontFamily};
         }
       `}</style>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;700&display=swap" />
       <ApolloProvider client={client}>
         <WalletContextProvider>
           <Component {...pageProps} />
