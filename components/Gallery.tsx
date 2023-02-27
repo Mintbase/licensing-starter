@@ -32,10 +32,10 @@ export const Gallery = ({ images, loading, error }: GalleryProps) => {
       >
         {images.map(function (data: any) {
           return (
-            <div key={data?.token_id} className="photo-tile">
-              <Link href={`/${data?.token_id}`}>
+            <div key={data?.tokenId} className="photo-tile">
+              <Link href={`/${data?.tokenId}`}>
                 <div className="pop-info">
-                  <h2>{data.reference_blob.photographer}</h2>
+                  <h2>{data.photographer}</h2>
                 </div>
                 <img src={data.media} alt="" className="image" />
               </Link>

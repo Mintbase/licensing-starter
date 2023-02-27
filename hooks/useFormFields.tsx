@@ -1,5 +1,7 @@
 import { RDFField } from "radix-declarative-form";
 import { useNearPrice } from '@mintbase-js/react';
+import { accountExists } from '@mintbase-js/rpc';
+
 import { parseUsableBasisPointAdjustedRoyalty } from "./useFormSubmit";
 
 export type FormFields = {
@@ -95,10 +97,6 @@ export const useFormFields = (): UseFormFieldsReturn => {
         default: '1',
         observe: true,
         HelpText: (state?: Partial<FormFields>) => {
-
-          console.log('cals', parseUsableBasisPointAdjustedRoyalty(state?.royalties))
-
-
           if (state?.price) {
             return <span>~ ${(state.price * nearPrice).toFixed(2)} USD</span>
           }
@@ -113,7 +111,7 @@ export const useFormFields = (): UseFormFieldsReturn => {
         name: 'royalties',
         label: 'Revenue sharing on sales (optional)',
         // observe: true, // allows enabling help text to update
-        helpText: 'You can share up to 50% of all future sales with up to 25 NEAR accounts',
+        helpText: 'Share up to 50% of future sales with NEAR accounts',
         addItemButtonText: 'Add another account',
         observe: true,
         columns: [
@@ -130,11 +128,26 @@ export const useFormFields = (): UseFormFieldsReturn => {
           }
         ],
         options: {
-          validate: async (value: any) => {
+          validate: async (value: { account: string, percent: string }[]) => {
+            // check sum is not more than 50%
             const totalShares = value.reduce((sum: number, split: any) => sum + Number(split.percent), 0)
             if (totalShares > 50) {
               return 'Total revenue shares must be less than 50%'
             }
+
+            // validate accounts exist
+            const validations = await Promise.all(
+              value.map(async v => ({
+                account: v.account,
+                exists: await accountExists(v.account)
+              }))
+            )
+
+            const nonExistingAccounts = validations.filter(v => !v.exists)
+            if (nonExistingAccounts.length > 0) {
+              return `NEAR account(s) ${nonExistingAccounts.map(v => v.account).join(', ')} do not exist.`
+            }
+
             return true
           }
         }

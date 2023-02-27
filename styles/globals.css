@@ -117,7 +117,7 @@ h1 {
 
 
 .field-royalties .instructions {
-  font-size: 12px;
+  font-size: 18px;
 }
 
 .field-royalties .add-item-button {
@@ -270,16 +270,17 @@ h1 {
   width: 100%;
 }
 
-.hero {
+.hero, .search-results {
   width: 100%;
 }
 
-.hero-center {
+.hero-center, .search-results-center {
   margin: 0 auto;
   max-width: 1100px;
   padding: 45px 20px 55px 20px;
 }
 
+.search-results h1,
 .hero h1 {
   font-weight: bold;
   font-size: 39px;
@@ -288,6 +289,11 @@ h1 {
   font-family: var(--poppins-bold);
   margin-bottom: 10px;;
 }
+
+.search-results h1 span {
+  opacity: 0.3;
+}
+
 
 .hero h3 {
   font-size: 18px;
