@@ -350,6 +350,7 @@ h1 {
 
 .detail-view {
   max-width: 1100px;
+  min-height: 70vh;
   margin: 15px auto;
   display: flex;
 }
@@ -372,8 +373,18 @@ h1 {
   padding: 20px;
 }
 
+.detail-view .right h1 {
+  margin-bottom: 0;
+}
+
 .detail-view .right h3 {
-  font-weight: 300;
+  margin-top: 5px;
+  font-weight: 400;
+  margin: 5px 0 15px 0;
+}
+
+.detail-view .right h3 span {
+  font-size: 13px;
   margin: 15px 0;
 }
 
@@ -381,9 +392,10 @@ h1 {
   margin: 15px 0;
 }
 
-
 .detail-view .detail {
   white-space: pre-wrap;
+  margin: 5px 10px;
+  line-height: 1.5;
 }
 
 .right .buttons {
@@ -440,15 +452,22 @@ h1 {
   margin: 10px 0 0 0;
   font-weight: 700;
 }
-.royalties-table {
+.royalties-row {
   width: 100%;
+  display: flex;
+  padding: 10px 0;
+  border: 1px solid #eee;
+  border-width: 1px 0 0 0;
 }
 
-.royalties-table td {
-  padding: 10px;
-  border: 1px solid #eee;
-  border-width: 1px 0;
+.royalties-row .account-col {
+  flex-grow: 1;
 }
+.royalties-row .percent-col {
+  flex-basis: 50px;
+  text-align: right;
+}
+
 
 /*loader thing */
 .loading {
@@ -475,9 +494,26 @@ h1 {
   width: 100px;
 }
 
+.fiat-form {
+  max-width: 600px;
+  width: 96%;
+  margin: 0 auto;
+}
+
+.fiat-form h5 {
+  margin: 50px 0 25px 0;
+}
+
+.fiat-form .thumbnail {
+  width: 200px;
+  height: 200px;
+  background-size: cover;
+  margin: 20px 0;
+}
+
 
 /* mobile */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 750px) {
   .heading .logo {
     margin-left: 10px;
   }

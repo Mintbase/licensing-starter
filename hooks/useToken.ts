@@ -2,6 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { utils } from 'near-api-js'
 
 export type LicenseToken = {
+  tokenId: string
   nearPrice: string
   yoctoPrice: string
   media: string
@@ -10,6 +11,7 @@ export type LicenseToken = {
   description: string
   license: string
   url: string
+  isAvailable: boolean
   royalties: {
     account: string
     percent: string
@@ -44,8 +46,9 @@ export const useToken = (token_id: string): TokenHookReturn => {
   }
 
   const ref = token?.reference_blob;
+  // const listing = token.listings.pop() || 0
 
-  const yoctoPrice = token?.listings
+  const yoctoPrice = token?.listings.length
     ? token.listings[0].price
       .toLocaleString()
       .replaceAll(',','')
@@ -77,6 +80,7 @@ export const useToken = (token_id: string): TokenHookReturn => {
       nearPrice,
       yoctoPrice,
       royalties,
+      isAvailable: token.listings.length > 0
     } as LicenseToken,
     loading,
     error
@@ -89,6 +93,7 @@ const query = gql`
       where: {
         nft_contract_id: { _eq: $contractId }
         token_id: { _eq: $token_id }
+
       }
     ) {
       media
@@ -98,7 +103,9 @@ const query = gql`
       token_id
       metadata_id
       reference_blob
-      listings {
+      listings (
+        where: { invalidated_at: { _is_null: true } }
+      ) {
         price
       }
     }

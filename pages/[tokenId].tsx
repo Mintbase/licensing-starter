@@ -18,8 +18,8 @@ export default function DetailPage() {
       <Header />
       <main className={"main"}>
         <Detail />
-        <Footer />
       </main>
+      <Footer />
     </>
   );
 }

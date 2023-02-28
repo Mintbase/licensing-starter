@@ -10,7 +10,7 @@ export const Search = () => {
       if (term > '') {
         router.push(`/search/${term}`)
       }
-    }, 400)
+    }, 150)
   , []);
 
   const handleSearchInput = (e: any) => {
