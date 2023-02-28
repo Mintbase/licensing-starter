@@ -21,14 +21,16 @@ export const Detail = () => {
     execute({ wallet }, buyCall);
   };
 
-  console.log(token, token.url)
+  const loadImg = (e: any) => {
+    e.target.style.opacity = 1;
+  }
 
   if (loading) return <Loader />;
 
   return (
     <main className={"detail-view"}>
       <div className="col left">
-        <img src={token?.media} alt="" />
+        <img src={token?.media} alt={token.description} onLoad={loadImg} />
         <p className="detail">{token.description}</p>
       </div>
       <div className="col right">

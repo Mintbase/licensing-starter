@@ -23,6 +23,10 @@ export const Gallery = ({ images, loading, error }: GalleryProps) => {
     500: 1
   }
 
+  const loadImg = (e: any) => {
+    e.target.style.opacity = 1;
+  }
+
   return (
     <div className="gallery">
       <Masonry
@@ -37,7 +41,7 @@ export const Gallery = ({ images, loading, error }: GalleryProps) => {
                 <div className="pop-info">
                   <h2>{data.photographer}</h2>
                 </div>
-                <img src={data.media} alt="" className="image" />
+                <img src={data.media} alt={data.description} className="image" onLoad={loadImg} />
               </Link>
             </div>
           );

@@ -238,6 +238,11 @@ h1 {
   position: relative;
 }
 
+.photo-tile img {
+  transition: all 500ms ease-out;
+  opacity: 0;
+}
+
 .pop-info {
   position: absolute;
   display: flex;
@@ -341,6 +346,8 @@ h1 {
 
 .detail-view img {
   width: 100%;
+  transition: all 500ms ease-out;
+  opacity: 0;
 }
 
 .detail-view .col {
