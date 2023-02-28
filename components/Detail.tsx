@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useToken } from "@/hooks/useToken";
-import { useWallet } from "@mintbase-js/react";
+import { useNearPrice, useWallet } from "@mintbase-js/react";
 import { buy, execute } from "@mintbase-js/sdk";
 import { useRouter } from "next/router";
 import { Loader } from "./Loader";
@@ -10,7 +10,9 @@ export const Detail = () => {
   const router = useRouter();
   const { id } = router.query;
   const { token, loading } = useToken(id as string);
-  const { selector } = useWallet();
+  const { selector, activeAccountId } = useWallet();
+  const { nearPrice } = useNearPrice();
+
   const handleBuy = async () => {
     const wallet = await selector.wallet();
     const buyCall = buy({
@@ -20,6 +22,10 @@ export const Detail = () => {
     });
     execute({ wallet }, buyCall);
   };
+
+  const handleFiatBuy = () => {
+    // TODO
+  }
 
   const loadImg = (e: any) => {
     e.target.style.opacity = 1;
@@ -36,15 +42,23 @@ export const Detail = () => {
       <div className="col right">
         <h4>{token?.title}</h4>
         <h1>{token.photographer}</h1>
-        <h3>Purchase price {token.nearPrice}N</h3>
+        <h3>Offered for {token.nearPrice}N (~${Number(token.nearPrice) * Number(nearPrice)} USD)</h3>
 
         <div className="buttons">
-          <button onClick={() => handleBuy()} className="buy-button icon-button">
+          <button onClick={() => handleBuy()} className="buy-button icon-button" disabled={!activeAccountId}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+            </svg>
+            <span>Acquire on-chain</span>
+          </button>
+          <button onClick={() => handleFiatBuy()} className="buy-button icon-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
             </svg>
-            <span>Acquire</span>
+            <span>Acquire w Card</span>
           </button>
+
+
           <button onClick={() => window.open(token.url)} className="dl-button icon-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" />
