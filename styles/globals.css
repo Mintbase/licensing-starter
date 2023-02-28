@@ -431,3 +431,25 @@ h1 {
   width: 150px;
   margin: 35px auto;
 }
+
+
+
+/* mobile */
+@media only screen and (max-width: 600px) {
+  .heading .logo {
+    margin-left: 10px;
+  }
+  .heading .icon-button span {
+    display: none;
+  }
+  .detail-view {
+    margin: 0;
+    flex-direction: column;
+
+  }
+  .detail-view .detail {
+    font-size: 12px;
+    text-align: right;
+    margin: 5px 15px;
+  }
+}

@@ -24,7 +24,7 @@ export const Search = () => {
       <input
         className="input"
         type="text"
-        placeholder="Search creative..."
+        placeholder="Search assets..."
         value={searchTerm}
         onChange={handleSearchInput}
       />

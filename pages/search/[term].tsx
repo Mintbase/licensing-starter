@@ -30,7 +30,7 @@ export default function Search({ term }: Props) {
             <h1>Search results for <span>{term}</span></h1>
           </div>
         </div>
-        {results && results.length > 0
+        {!loading && results && results.length > 0
           ? <Gallery images={results} error={error} loading={loading} />
           : <div className="gallery no-results">No results were found for that search.</div>
         }
