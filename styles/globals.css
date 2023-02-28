@@ -456,6 +456,24 @@ h1 {
   margin: 35px auto;
 }
 
+.prompt-login {
+  width: 300px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+.prompt-login button {
+  cursor: pointer;
+  width: 100%;
+  height: 55px;
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+.prompt-login button svg {
+  width: 100px;
+}
 
 
 /* mobile */
