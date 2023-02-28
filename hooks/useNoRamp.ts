@@ -60,7 +60,7 @@ export const useNoRamp = (tokenId: string, sellerId: string, receiverId: string,
       setPriceId(pricing.id);
     }
 
-    if (tokenId && Number(amount) > 0) {
+    if (sellerId && tokenId && Number(amount) > 0) {
       void makeNoRampRequests();
     }
   }, [amount, fetchNoRampData, tokenId, receiverId, sellerId])
