@@ -128,7 +128,7 @@ export const useFormFields = (): UseFormFieldsReturn => {
           }
         ],
         options: {
-          validate: async (value: { account: string, percent: string }[]) => {
+          validate: async (value: { account: string, percent: string }[] = []) => {
             // check sum is not more than 50%
             const totalShares = value.reduce((sum: number, split: any) => sum + Number(split.percent), 0)
             if (totalShares > 50) {

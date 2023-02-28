@@ -7,7 +7,7 @@ TODO:
 - [ ] Buy tx error/success handling page
 - [ ] My licenses area, (view, remove listings)
 - [ ] Category page?
-- [ ] Photog page (search works pretty well for it?)
+- [ ] Photog page (search works pretty well for now)
 - [ ] Fiat button
 
 

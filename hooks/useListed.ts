@@ -1,5 +1,4 @@
 import { gql, useQuery } from "@apollo/client";
-import { LicenseToken } from "./useToken";
 
 type ReferenceBlob = {
   photographer: string

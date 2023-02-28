@@ -1,9 +1,15 @@
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import { NextPageContext } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
 
-export default function TransactionResult() {
+type Props = {
+  hashes: string[]
+}
+
+export default function TransactionResult({ hashes }: Props) {
+  console.log('got hashes?', hashes)
   return (
     <>
       <Head>
@@ -23,9 +29,16 @@ export default function TransactionResult() {
           <li>Polls the indexer depending on the transaction results to ensure expected data is present</li>
           <li>Displays the result of the checks</li>
         </ul>
-
       </main>
       <Footer />
     </>
   )
+}
+
+export const getServerSideProps = ({ query }: NextPageContext) => {
+  return {
+    props: {
+      hashes: (query.transactionHashes as string || '').split(',')
+    }
+  }
 }

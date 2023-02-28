@@ -14,7 +14,7 @@ export const MintingForm = () => {
         form={form}
         isInFlight={isInFlight}
         submitButtonLabel="Create License"
-        submitButtonLabelInFlight="Creating..."
+        submitButtonLabelInFlight=""
       />
     </div>
   )

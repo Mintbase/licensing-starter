@@ -30,7 +30,6 @@ export const Detail = () => {
   const loadImg = (e: any) => {
     e.target.style.opacity = 1;
   }
-  console.log(token)
 
   if (loading) return <Loader />;
 
