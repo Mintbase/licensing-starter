@@ -6,6 +6,7 @@ export type LicenseToken = {
   nearPrice: string
   yoctoPrice: string
   media: string
+  minter: string
   reference: string
   title: string
   photographer: string

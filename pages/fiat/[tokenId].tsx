@@ -20,6 +20,7 @@ export default function BuyWithFiatPage({ tokenId }: Props) {
   const priceUSD = (Number(token.nearPrice) * Number(nearPrice)).toFixed(2);
   const { error, loading: noRampLoading, priceId } = useNoRamp(
     tokenId as string,
+    token.minter,
     'benipsen.testnet',
     priceUSD
   );

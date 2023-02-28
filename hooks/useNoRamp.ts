@@ -14,8 +14,7 @@ const NO_RAMP_API_KEY = '6522860240193e0e2ba7cf02a1ce340ed7c75b107d2e06f779fe02a
 const NO_RAMP_KYC_ENDPOINT = 'https://api-testnet.noramp.io/apps/app_2TtUkzu8ysYF3qlc6HZSoT/kycs';
 const NO_RAMP_PRICE_ENDPOINT = 'https://api-testnet.noramp.io/prices/app_2TtUkzu8ysYF3qlc6HZSoT';
 
-export const useNoRamp = (tokenId: string, walletId: string, amount: string): UseNoRampReturn => {
-  const { activeAccountId } = useWallet();
+export const useNoRamp = (tokenId: string, sellerId: string, receiverId: string, amount: string): UseNoRampReturn => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [priceId, setPriceId] = useState(null);
@@ -41,7 +40,7 @@ export const useNoRamp = (tokenId: string, walletId: string, amount: string): Us
     async function makeNoRampRequests() {
       // get kyc data
       const { data: kyc } = await fetchNoRampData(NO_RAMP_KYC_ENDPOINT, {
-        "identifier": activeAccountId
+        "identifier": sellerId
       })
       // get pricing data
       const { data: pricing } = await fetchNoRampData(NO_RAMP_PRICE_ENDPOINT, {
@@ -50,7 +49,7 @@ export const useNoRamp = (tokenId: string, walletId: string, amount: string): Us
         trigger_data: {
           params_data: {
             token_id: tokenId,
-            receiver_id: walletId,
+            receiver_id: receiverId,
             approval_id: 123, // FIXME: we may have to fetch this via RPC call unless we change contract
           },
         },
@@ -64,7 +63,7 @@ export const useNoRamp = (tokenId: string, walletId: string, amount: string): Us
     if (tokenId && Number(amount) > 0) {
       void makeNoRampRequests();
     }
-  }, [activeAccountId, amount, fetchNoRampData, tokenId, walletId])
+  }, [amount, fetchNoRampData, tokenId, receiverId, sellerId])
 
   return {
     loading,
