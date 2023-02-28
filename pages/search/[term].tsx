@@ -11,6 +11,7 @@ type Props = {
 
 export default function Search({ term }: Props) {
   const { results, loading, error } = useSearch(term);
+
   return (
     <>
       <Head>
@@ -29,7 +30,10 @@ export default function Search({ term }: Props) {
             <h1>Search results for <span>{term}</span></h1>
           </div>
         </div>
-        <Gallery images={results} error={error} loading={loading} />
+        {results && results.length > 0
+          ? <Gallery images={results} error={error} loading={loading} />
+          : <div className="gallery no-results">No results were found for that search.</div>
+        }
         <Footer />
       </main>
     </>

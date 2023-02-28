@@ -29,9 +29,9 @@ export const useSearch = (term: string): UseSearchHookReturn => {
         });
         setResults(hits);
         setLoading(false);
-      } catch (e) {
-        console.error(`Algolia search error: ${e}`);
-        setError(e as any);
+      } catch (e: any) {
+        console.error(`Algolia search error: ${e.message}`);
+        setError(e.message as any);
       }
     }
     void search()
