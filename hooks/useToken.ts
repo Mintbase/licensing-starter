@@ -6,6 +6,7 @@ export type LicenseToken = {
   nearPrice: string
   yoctoPrice: string
   media: string
+  reference: string
   title: string
   photographer: string
   description: string
@@ -104,7 +105,11 @@ const query = gql`
       metadata_id
       reference_blob
       listings (
-        where: { invalidated_at: { _is_null: true } }
+        where: {
+          invalidated_at: { _is_null: true }
+          unlisted_at: { _is_null: true }
+          accepted_at: { _is_null: true }
+        }
       ) {
         price
       }

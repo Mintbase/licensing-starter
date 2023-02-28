@@ -450,7 +450,22 @@ h1 {
 }
 .terms-link {
   margin: 10px 0 0 0;
-  font-weight: 700;
+  font-weight: 400;
+  font-size: 12px;
+}
+.terms-link a {
+  display: inline-block;
+  margin-right: 10px;
+  color: rgba(0,0,0,0.6);
+}
+.terms-link a:hover {
+  color: var(--link-color);
+}
+.terms-link svg {
+  position: relative;
+  display: inline-block;
+  width: 15px;
+  top: 3px;
 }
 .royalties-row {
   width: 100%;
