@@ -43,7 +43,7 @@ export const useToken = (token_id: string): TokenHookReturn => {
     }
   }
 
-  const ref = data?.reference_blob;
+  const ref = token?.reference_blob;
 
   const yoctoPrice = token?.listings
     ? token.listings[0].price

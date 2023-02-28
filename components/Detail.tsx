@@ -21,6 +21,8 @@ export const Detail = () => {
     execute({ wallet }, buyCall);
   };
 
+  console.log(token, token.url)
+
   if (loading) return <Loader />;
 
   return (
