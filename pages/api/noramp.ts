@@ -68,6 +68,14 @@ export default async function norampEndpoint(req: NextApiRequest, res: NextApiRe
     identifier: token.owner
   })
 
+  if (!kyc) {
+    // likely issues to to KYC, return false
+    res.status(200).send({
+      noFiat: true
+    });
+    return;
+  }
+
   const priceConfig = {
     "currency": "usd",
     "trigger_id": NO_RAMP_TRIGGER_ID,
