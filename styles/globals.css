@@ -594,6 +594,7 @@ button.submit:disabled::after {
   max-width: 600px;
   width: 96%;
   margin: 0 auto;
+  text-align: center;
 }
 
 .fiat-form h5 {
@@ -604,7 +605,7 @@ button.submit:disabled::after {
   width: 200px;
   height: 200px;
   background-size: cover;
-  margin: 20px 0;
+  margin: 20px auto;
 }
 
 

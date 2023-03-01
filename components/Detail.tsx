@@ -89,18 +89,21 @@ export const Detail = () => {
             </svg>
           </a>
         </p>
-        <h4>Royalty Holders</h4>
+
         {token.royalties && token.royalties.length > 0
-          ? token.royalties.map(({ account, percent }) =>
-              (
-                <div key={`rev-${account}`} className="royalties-row">
-                  <div className="account-col">{account}</div>
-                  <div className="percent-col">{percent}%</div>
-                </div>
-              )
-            )
+          ? <div>
+              <h4>Royalty Holders</h4>
+              {token.royalties.map(({ account, percent }) =>
+                (
+                  <div key={`rev-${account}`} className="royalties-row">
+                    <div className="account-col">{account}</div>
+                    <div className="percent-col">{percent}%</div>
+                  </div>
+                )
+              )}
+            </div>
           : null
-        }
+          }
       </div>
     </main>
   );

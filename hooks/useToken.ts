@@ -61,8 +61,12 @@ export const useToken = (token_id: string): TokenHookReturn => {
 
   // parse royalties from mint memo
   const memo = JSON.parse(token.mint_memo);
-  const royaltyTotalPercentage = Number(memo.royalty.percentage.numerator);
-  const memoRoyalties = memo.royalty.split_between || {}
+  const royaltyTotalPercentage = memo.royalty
+    ? Number(memo.royalty.percentage.numerator)
+    : 0;
+  const memoRoyalties = memo.royalty
+    ? memo.royalty.split_between || {}
+    : {}
 
   const sumSplits = Object
     .entries(memoRoyalties as Record<string, {numerator: number }>)
