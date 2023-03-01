@@ -26,7 +26,7 @@ type Props = {
 
 export default function BuyWithFiatPage({ tokenId }: Props) {
   const { token, loading: tokenLoading } = useToken(tokenId as string);
-  const { amount, priceId, error } = useNoRamp(tokenId);
+  const { amount, priceId, error, loading: fiatLoading } = useNoRamp(tokenId);
   const onEvent = useCallback((eventData: any) => {
     console.log('eventData', eventData.type, eventData)
   }, []);
@@ -35,8 +35,7 @@ export default function BuyWithFiatPage({ tokenId }: Props) {
     event: 'onPayment',
     handler: onEvent,
   });
-  const isLoading = tokenLoading
-
+  const isLoading = tokenLoading || fiatLoading
   return (
     <>
       <Head>
