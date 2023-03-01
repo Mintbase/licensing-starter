@@ -69,7 +69,7 @@ export default async function norampEndpoint(req: NextApiRequest, res: NextApiRe
       identifier: token.owner
     })
 
-    if (!kyc) {
+    if (!kyc || !kyc.id) {
       // likely issues to to KYC, return false
       res.status(200).send({
         noFiat: true
@@ -95,7 +95,7 @@ export default async function norampEndpoint(req: NextApiRequest, res: NextApiRe
     // fetch the price id as well
     const { data: pricing } = await fetchNoRampData(NO_RAMP_PRICE_ENDPOINT, priceConfig);
 
-    if (!pricing) {
+    if (!pricing || !pricing.id) {
       // likely issues to to KYC, return false
       res.status(200).send({
         noFiat: true
@@ -106,6 +106,7 @@ export default async function norampEndpoint(req: NextApiRequest, res: NextApiRe
       priceId: pricing.id,
       amount
     })
+
   } catch (err) {
     console.error(err);
     res.status(200).send({
