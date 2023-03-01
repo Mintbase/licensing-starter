@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useRouter } from 'next/router'
 import debounce from 'debounce';
 
@@ -10,7 +10,7 @@ export const Search = () => {
       if (term > '') {
         router.push(`/search/${term}`)
       }
-    }, 150)
+    }, 650)
   , []);
 
   const handleSearchInput = (e: any) => {
@@ -19,8 +19,15 @@ export const Search = () => {
     debouncedChangeHandler(term);
   }
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    console.log(e.target.elements);
+    const term = e.target.elements[0].value;
+    router.push(`/search/${term}`);
+  }
+
   return (
-    <form className="search-form">
+    <form className="search-form" onSubmit={handleSubmit}>
       <input
         className="input"
         type="text"
