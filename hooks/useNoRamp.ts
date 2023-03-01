@@ -38,7 +38,7 @@ export const useNoRamp = (tokenId: string) => {
       }
     };
 
-    if (activeAccountId) {
+    if (activeAccountId && tokenId) {
       void fetchNoRampPrice();
     }
 
