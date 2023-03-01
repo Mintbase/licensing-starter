@@ -15,7 +15,7 @@ export const NO_RAMP_PRICE_ENDPOINT = 'https://api-testnet.noramp.io/prices/app_
 
 export const useNoRamp = (tokenId: string) => {
   const { activeAccountId } = useWallet();
-  const [error, setError] = useState();
+  const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [priceId, setPriceId] = useState(null);
   const [amount, setAmount] = useState(null);
@@ -26,6 +26,10 @@ export const useNoRamp = (tokenId: string) => {
         const res = await fetch(`${process.env.NEXT_PUBLIC_NORAMP_ENDPOINT as string}?tokenId=${tokenId}&to=${activeAccountId}`);
         const { priceId, amount } = await res.json();
         setLoading(false);
+        if (!priceId) {
+          setError('The owner of this license does not currently accept fiat payments.')
+          return
+        }
         setPriceId(priceId);
         setAmount(amount);
       } catch (e) {

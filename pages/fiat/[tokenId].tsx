@@ -12,6 +12,7 @@ import { useNearPrice } from "@mintbase-js/react";
 import { utils } from "near-api-js";
 import { NextPageContext } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useCallback } from "react";
 
 // create a new client for SSR
@@ -25,7 +26,7 @@ type Props = {
 
 export default function BuyWithFiatPage({ tokenId }: Props) {
   const { token, loading: tokenLoading } = useToken(tokenId as string);
-  const { amount, priceId } = useNoRamp(tokenId);
+  const { amount, priceId, error } = useNoRamp(tokenId);
   const onEvent = useCallback((eventData: any) => {
     console.log('eventData', eventData.type, eventData)
   }, []);
@@ -63,12 +64,18 @@ export default function BuyWithFiatPage({ tokenId }: Props) {
                   <h3><span>${amount} USD</span>*</h3>
                   <p>*Not including market and processing fees.</p>
                 </div>
-                <iframe
-                  src={`https://testnet.on-noramp.com/embed/payments/app_2TtUkzu8ysYF3qlc6HZSoT?price_id=${priceId}&theme=light`}
-                  frameBorder="0"
-                  height="220"
-                  width="100%"
-                />
+                {error
+                  ? <div className="fiat-error-wrap">
+                      <p className="fiat-error">{error}</p>
+                      <Link href={`/${tokenId}`}>Return to license page</Link>
+                    </div>
+                  : <iframe
+                    src={`https://testnet.on-noramp.com/embed/payments/app_2TtUkzu8ysYF3qlc6HZSoT?price_id=${priceId}&theme=light`}
+                    frameBorder="0"
+                    height="220"
+                    width="100%"
+                  />
+                }
               </div>
             )
         }

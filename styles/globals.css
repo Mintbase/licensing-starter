@@ -608,6 +608,16 @@ button.submit:disabled::after {
   margin: 20px auto;
 }
 
+.fiat-error {
+  margin: 25px;
+  color: red;
+  font-weight: 400;
+}
+
+.fiat-error-wrap a {
+  font-weight: 400;
+}
+
 
 /* mobile */
 @media only screen and (max-width: 750px) {
