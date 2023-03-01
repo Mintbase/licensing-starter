@@ -31,78 +31,85 @@ const fetchNoRampData = async (endpoint: string, body: object) => {
 export default async function norampEndpoint(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
 
-  // fetch the token
-  const { data } = await client.query({
-    query: tokenQuery,
-    variables: {
-      contractId: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-      token_id: query.tokenId,
-    },
-    context: {
-      headers: { "mb-api-key": "anon" },
-    },
-  });
-
-  const token = data.mb_views_nft_tokens[0];
-
-  // calculate amount
-  const yoctoPrice = token?.listings.length
-    ? token.listings[0].price
-      .toLocaleString()
-      .replaceAll(',','')
-      .replaceAll('.','')
-    : 0
-
-  const tokenPriceInNear = utils.format.formatNearAmount(yoctoPrice);
-
-  // get usd price
-  const nearPriceReq = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=near%2Cusn%2Cjumbo-exchange&include_last_updated_at=true&vs_currencies=usd%2Ceur%2Ccny');
-  const nearPriceData = await nearPriceReq.json() as any;
-  const amount = Number(Number(tokenPriceInNear) * Number(nearPriceData.near.usd)).toFixed(2);
-
-  // get kyc for the "seller"
-  // TODO, talk more to noramp about this.
-  // Can we invoke multiple contract calls?
-  // Call payouts and royalties
-  const { data: kyc } = await fetchNoRampData(NO_RAMP_KYC_ENDPOINT, {
-    identifier: token.owner
-  })
-
-  if (!kyc) {
-    // likely issues to to KYC, return false
-    res.status(200).send({
-      noFiat: true
-    });
-    return;
-  }
-
-  const priceConfig = {
-    "currency": "usd",
-    "trigger_id": NO_RAMP_TRIGGER_ID,
-    trigger_data: {
-      params_data: {
+  try {
+    // fetch the token
+    const { data } = await client.query({
+      query: tokenQuery,
+      variables: {
+        contractId: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
         token_id: query.tokenId,
-        receiver_id: query.to,
-        // FIXME: we may have to fetch this via RPC call unless we change contract
-        // approval_id: 123,
       },
-    },
-    "kyc_id": kyc.id,
-    "amount": Number(amount)
-  };
+      context: {
+        headers: { "mb-api-key": "anon" },
+      },
+    });
 
-  // fetch the price id as well
-  const { data: pricing } = await fetchNoRampData(NO_RAMP_PRICE_ENDPOINT, priceConfig);
+    const token = data.mb_views_nft_tokens[0];
 
-  if (!pricing) {
-    // likely issues to to KYC, return false
+    // calculate amount
+    const yoctoPrice = token?.listings.length
+      ? token.listings[0].price
+        .toLocaleString()
+        .replaceAll(',','')
+        .replaceAll('.','')
+      : 0
+
+    const tokenPriceInNear = utils.format.formatNearAmount(yoctoPrice);
+
+    // get usd price
+    const nearPriceReq = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=near%2Cusn%2Cjumbo-exchange&include_last_updated_at=true&vs_currencies=usd%2Ceur%2Ccny');
+    const nearPriceData = await nearPriceReq.json() as any;
+    const amount = Number(Number(tokenPriceInNear) * Number(nearPriceData.near.usd)).toFixed(2);
+
+    // get kyc for the "seller"
+    // TODO, talk more to noramp about this.
+    // Can we invoke multiple contract calls?
+    // Call payouts and royalties
+    const { data: kyc } = await fetchNoRampData(NO_RAMP_KYC_ENDPOINT, {
+      identifier: token.owner
+    })
+
+    if (!kyc) {
+      // likely issues to to KYC, return false
+      res.status(200).send({
+        noFiat: true
+      });
+      return;
+    }
+
+    const priceConfig = {
+      "currency": "usd",
+      "trigger_id": NO_RAMP_TRIGGER_ID,
+      trigger_data: {
+        params_data: {
+          token_id: query.tokenId,
+          receiver_id: query.to,
+          // FIXME: we may have to fetch this via RPC call unless we change contract
+          // approval_id: 123,
+        },
+      },
+      "kyc_id": kyc.id,
+      "amount": Number(amount)
+    };
+
+    // fetch the price id as well
+    const { data: pricing } = await fetchNoRampData(NO_RAMP_PRICE_ENDPOINT, priceConfig);
+
+    if (!pricing) {
+      // likely issues to to KYC, return false
+      res.status(200).send({
+        noFiat: true
+      })
+    }
+
+    res.status(200).send({
+      priceId: pricing.id,
+      amount
+    })
+  } catch (err) {
+    console.error(err);
     res.status(200).send({
       noFiat: true
     })
   }
-
-  res.status(200).send({
-    priceId: pricing.id,
-    amount
-  })
 }
