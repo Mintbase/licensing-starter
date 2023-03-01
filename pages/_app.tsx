@@ -25,7 +25,7 @@ mbjs.config({
   contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
 });
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   uri: "https://graph.mintbase.xyz/testnet",
   cache: new InMemoryCache(),
 });

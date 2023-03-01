@@ -27,7 +27,7 @@ type TokenHookReturn = {
 }
 
 export const useToken = (token_id: string): TokenHookReturn => {
-  const { data, loading, error } = useQuery<any>(query, {
+  const { data, loading, error } = useQuery<any>(tokenQuery, {
     variables: {
       contractId: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
       token_id: token_id,
@@ -89,7 +89,8 @@ export const useToken = (token_id: string): TokenHookReturn => {
   };
 };
 
-const query = gql`
+
+export const tokenQuery = gql`
   query listedByContract($contractId: String!, $token_id: String!) {
     mb_views_nft_tokens(
       where: {
@@ -101,6 +102,7 @@ const query = gql`
       media
       reference
       title
+      owner
       mint_memo
       token_id
       metadata_id

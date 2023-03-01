@@ -3,12 +3,13 @@
 TODO:
 
 - [X] Search results page
-- [ ] Create tx error/success handling page
+- [X] Create tx error/success handling page
 - [ ] Buy tx error/success handling page
 - [ ] My licenses area, (view, remove listings)
 - [ ] Category page?
 - [ ] Photog page (search works pretty well for now)
 - [ ] Fiat button
+- [ ] TODO - indexer polling function in mbjs
 
 
 ### .env

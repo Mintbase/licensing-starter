@@ -1,26 +1,34 @@
-import { Detail } from "@/components/Detail";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Loader } from "@/components/Loader";
-import { useNoRamp, useNoRampEvent } from "@/hooks/useNoRamp";
-import { useToken } from "@/hooks/useToken";
+import { NO_RAMP_API_KEY, NO_RAMP_KYC_ENDPOINT, useNoRamp, useNoRampEvent } from "@/hooks/useNoRamp";
+import { LicenseToken, tokenQuery, useToken } from "@/hooks/useToken";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { useNearPrice } from "@mintbase-js/react";
 import { NextPageContext } from "next";
 import Head from "next/head";
 import { useCallback } from "react";
 
+// create a new client for SSR
+export const client = new ApolloClient({
+  uri: "https://graph.mintbase.xyz/testnet",
+  cache: new InMemoryCache(),
+  ssrMode: true
+});
+
 type Props = {
   tokenId: string
+  kycId: string
+  token: LicenseToken,
 }
 
-export default function BuyWithFiatPage({ tokenId }: Props) {
-
+export default function BuyWithFiatPage({ tokenId, kycId }: Props) {
   const { token, loading: tokenLoading } = useToken(tokenId as string);
   const { nearPrice } = useNearPrice();
   const priceUSD = (Number(token.nearPrice) * Number(nearPrice)).toFixed(2);
   const { error, loading: noRampLoading, priceId } = useNoRamp(
     tokenId as string,
-    token.minter,
+    kycId,
     'benipsen.testnet',
     priceUSD
   );
@@ -79,10 +87,44 @@ export default function BuyWithFiatPage({ tokenId }: Props) {
 
 // TODO: server side fetch is probably better
 //      possible necessary for noramp api keys
-export const getServerSideProps = ({ query }: NextPageContext) => {
+export const getServerSideProps = async ({ query }: NextPageContext) => {
+
+  // fetch the token
+  const { data } = await client.query({
+    query: tokenQuery,
+    variables: {
+      contractId: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+      token_id: query.tokenId,
+    },
+    context: {
+      headers: { "mb-api-key": "anon" },
+    },
+  });
+
+  const token = data.mb_views_nft_tokens[0];
+
+  // get kyc for the "seller"
+  // TODO, talk more to noramp about this.
+  // Can we invoke multiple contract calls?
+  // Call payouts and royalties
+  const response = await fetch(NO_RAMP_KYC_ENDPOINT, {
+    method: "POST",
+    headers: {
+      'content-type': 'application/json',
+      'authorization': `Bearer ${NO_RAMP_API_KEY}`,
+    },
+    body: JSON.stringify({
+      identifier: token.owner
+    })
+  });
+
+  const { data: kyc } = await response.json();
+
   return {
     props: {
-      tokenId: query.tokenId
+      kycId: kyc.id,
+      tokenId: query.tokenId,
+      token,
     }
   }
 }

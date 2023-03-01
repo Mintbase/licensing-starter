@@ -73,11 +73,11 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       const mintCall = mint({
         metadata: { reference: reference.id, media: reference.media_hash },
         ownerId: activeAccountId as string,
-        options: {
+        options: splits.length ? {
           // always use the max 50% baseline
           royaltyPercentage: percentage,
           splits,
-        },
+        } : undefined,
         noSplits: true,
         tokenIdsToMint: [tokenId],
       });
@@ -116,6 +116,14 @@ export const parseUsableBasisPointAdjustedRoyalty = (
   splits: Record<string, number>,
   percentage: number
 } => {
+  // early bail out
+  if (!royalties.length) {
+    return {
+      splits: {},
+      percentage:0
+    }
+  }
+
   // parse usable data with variables as required
   // const basisMultiplier = needsRoyaltyAdjusted ? 2 : 1;
   const usableSplits = royalties
@@ -133,6 +141,7 @@ export const parseUsableBasisPointAdjustedRoyalty = (
       // from the percentage, recompute usable split as % of the total so it adds up to 10k
       [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
     }), {})
+
 
     // compute sum and adjust the first split upward as needed
     const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)

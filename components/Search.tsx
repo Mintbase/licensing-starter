@@ -21,7 +21,6 @@ export const Search = () => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log(e.target.elements);
     const term = e.target.elements[0].value;
     router.push(`/search/${term}`);
   }
