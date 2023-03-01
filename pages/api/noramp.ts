@@ -100,6 +100,7 @@ export default async function norampEndpoint(req: NextApiRequest, res: NextApiRe
       res.status(200).send({
         noFiat: true
       })
+      return;
     }
 
     res.status(200).send({
