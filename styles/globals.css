@@ -411,6 +411,10 @@ button.submit:disabled::after {
   flex: 2
 }
 
+.detail-view .back-home {
+  font-weight: 400;
+}
+
 .detail-view .right {
   padding: 20px;
 }

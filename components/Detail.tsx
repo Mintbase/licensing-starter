@@ -4,6 +4,7 @@ import { useNearPrice, useWallet } from "@mintbase-js/react";
 import { buy, execute } from "@mintbase-js/sdk";
 import { useRouter } from "next/router";
 import { Loader } from "./Loader";
+import Link from "next/link";
 
 export const Detail = () => {
   const router = useRouter();
@@ -39,7 +40,9 @@ export const Detail = () => {
         <img src={token?.media} alt={token.description} onLoad={loadImg} />
         <p className="detail">{token.description}</p>
       </div>
+
       <div className="col right">
+        <Link className="back-home" href="/">Go Back</Link>
         <h4>{token?.title}</h4>
         <h1>{token.photographer}</h1>
 
