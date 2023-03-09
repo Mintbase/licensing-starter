@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import { utils } from 'near-api-js'
+// @ts-ignore
 import * as parser from 'number-parsing';
 
 export type LicenseToken = {
