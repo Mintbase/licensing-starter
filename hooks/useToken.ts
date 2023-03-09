@@ -1,9 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
 import { utils } from 'near-api-js'
+import * as parser from 'number-parsing';
 
 export type LicenseToken = {
   tokenId: string
   nearPrice: string
+  nearPriceAsNumber: number
   yoctoPrice: string
   media: string
   minter: string
@@ -58,6 +60,7 @@ export const useToken = (token_id: string): TokenHookReturn => {
     : 0
 
   const nearPrice = utils.format.formatNearAmount(yoctoPrice);
+  const nearPriceAsNumber = parser(nearPrice);
 
   // parse royalties from mint memo
   const memo = JSON.parse(token.mint_memo);
@@ -84,6 +87,7 @@ export const useToken = (token_id: string): TokenHookReturn => {
       ...token,
       ...ref,
       nearPrice,
+      nearPriceAsNumber,
       yoctoPrice,
       royalties,
       isAvailable: token.listings.length > 0

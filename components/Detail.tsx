@@ -12,7 +12,7 @@ export const Detail = () => {
   const { token, loading } = useToken(tokenId as string);
   const { selector, activeAccountId } = useWallet();
   const { nearPrice } = useNearPrice();
-  const priceUSD = (Number(token.nearPrice) * Number(nearPrice)).toFixed(2);
+  const priceUSD = (Number(token.nearPriceAsNumber) * Number(nearPrice)).toFixed(2);
 
   const handleBuy = async () => {
     const wallet = await selector.wallet();
