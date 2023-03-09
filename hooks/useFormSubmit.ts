@@ -73,12 +73,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       const mintCall = mint({
         metadata: { reference: reference.id, media: reference.media_hash },
         ownerId: activeAccountId as string,
-        options: splits.length ? {
-          // always use the max 50% baseline
-          royaltyPercentage: percentage,
-          splits,
-        } : undefined,
-        noSplits: true,
+        royalties: Object.keys(splits).length > 0 ? splits : undefined,
         tokenIdsToMint: [tokenId],
       });
 
@@ -122,7 +117,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
 }
 
 export const parseUsableBasisPointAdjustedRoyalty = (
-  royalties: { account: string, percent: number }[] = [],
+  royalties: { account: string, percent: string | number }[] = [],
   // minter: string,
   // needsRoyaltyAdjusted: boolean = false
 ): {
@@ -144,30 +139,33 @@ export const parseUsableBasisPointAdjustedRoyalty = (
     .map(entry => ({
       account: entry.account,
       // percent: Number(entry.percent),
-      // tenths: Number(entry.percent) / 100,
+      tenths: Number(entry.percent) / 100,
       basis: Number(entry.percent) * 100 // * basisMultiplier
     }))
 
+    // NOTE: this is no longer needed, mbjs does it now.
     const percentage = usableSplits.reduce((sum, sp) => sum + sp.basis, 0)
     const splits: Record<string, number> = usableSplits.reduce((build, sp) => ({
       ...build,
       // from the percentage, recompute usable split as % of the total so it adds up to 10k
-      [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
+      // [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
+      [sp.account]: sp.tenths
     }), {})
 
 
-    // compute sum and adjust the first split upward as needed
-    const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
-    const gap = 10_000 - basisPointsSum
+    // // compute sum and adjust the first split upward as needed
+    // const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
+    // const gap = 10_000 - basisPointsSum
 
-    // fill any gaps due to rounding
-    if (gap > 0) {
-      const firstKey = Object.keys(splits)[0]
-      splits[firstKey] += gap
-    }
+    // // fill any gaps due to rounding
+    // if (gap > 0) {
+    //   const firstKey = Object.keys(splits)[0]
+    //   splits[firstKey] += gap
+    // }
 
     return {
       splits,
+      // not needed
       percentage //: percentage / basisMultiplier  // re-adjust for royalty total
     };
 }

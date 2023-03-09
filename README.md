@@ -4,8 +4,8 @@ TODO:
 
 - [X] Search results page
 - [X] Create tx error/success handling page
-- [ ] Buy tx error/success handling page
 - [ ] My licenses area, (view, remove listings)
+- [ ] Buy tx error/success handling page
 - [ ] Category page?
 - [ ] Photog page (search works pretty well for now)
 - [ ] Fiat button
