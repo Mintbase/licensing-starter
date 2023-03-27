@@ -9,7 +9,7 @@ type QueryResult = {
   token_id: string
 }
 
-export const useListed = () => {
+export const useTrending = () => {
   const { data, loading, error } = useQuery<any>(query, {
     variables: { contractId: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS },
     context: {
@@ -22,17 +22,20 @@ export const useListed = () => {
       ...listing,
       photographer: listing.reference_blob?.photographer,
       tokenId: listing.token_id
-    })).sort(() => Math.ceil(Math.random())),
+    })),
     loading,
     error
   };
 };
 
 const query = gql`
-  query listedByContract($contractId: String!) {
-    mb_views_active_listings(where: { nft_contract_id: { _eq: $contractId } }) {
+  query trendingAssets($contractId: String!) {
+    mb_views_active_listings(
+      where: { nft_contract_id: { _eq: $contractId } }
+      limit: 5
+      order_by: { created_at: desc }
+    ) {
       media
-      price
       reference
       title
       token_id

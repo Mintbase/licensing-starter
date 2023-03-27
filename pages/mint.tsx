@@ -5,6 +5,7 @@ import { useWallet } from "@mintbase-js/react";
 import { MintingForm } from "@/components/MintingForm";
 import { PromptLogin } from "@/components/PromptLogin";
 import { Footer } from "@/components/Footer";
+import { CreateMenu } from "@/components/CreateMenu";
 
 export default function Mint() {
   const { activeAccountId } = useWallet();
@@ -18,12 +19,18 @@ export default function Mint() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="main">
+      <div className="container">
         {activeAccountId
-          ? <MintingForm />
-          : <PromptLogin />
+          ? <CreateMenu />
+          : null
         }
-      </main>
+        <main className="main">
+          {activeAccountId
+            ? <MintingForm />
+            : <PromptLogin />
+          }
+        </main>
+      </div>
       <Footer />
     </>
   );

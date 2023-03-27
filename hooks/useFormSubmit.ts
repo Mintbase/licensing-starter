@@ -83,24 +83,24 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
         tokenId: tokenId.toString(),
       });
 
-      // add approval call for noramp account
-      const approvalCall: NearContractCall<{ token_id: string, account_id: string }> = {
-        deposit: '800000000000000000000',
-        contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
-        args: {
-          token_id: tokenId.toString(),
-          account_id: process.env.NEXT_PUBLIC_NORAMP_ADDRESS as string
-        },
-        methodName: 'nft_approve',
-        gas: GAS
-      }
+      // add approval call for fiat processing account
+      // const approvalCall: NearContractCall<{ token_id: string, account_id: string }> = {
+      //   deposit: '800000000000000000000',
+      //   contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string,
+      //   args: {
+      //     token_id: tokenId.toString(),
+      //     account_id: process.env.NEXT_PUBLIC_NORAMP_ADDRESS as string
+      //   },
+      //   methodName: 'nft_approve',
+      //   gas: GAS
+      // }
 
       // execute the mint, listings and fiat transfer approval
       await execute({ wallet, callbackUrl: process?.env?.NEXT_PUBLIC_CALLBACK_URL },
         mintCall,
         depositStorageCall,
         listCall,
-        approvalCall
+        // approvalCall
       );
 
       setDataInFlight(false);

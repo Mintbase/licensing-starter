@@ -38,7 +38,7 @@ export default function TransactionResult({ hashes }: Props) {
             Something did not go right...
           </h3>
           <p>
-            You may want to check any of the following hashes:
+            You may want to check the following hashes:
             <HashLinks />
           </p>
         </main>
@@ -46,8 +46,8 @@ export default function TransactionResult({ hashes }: Props) {
       {success ?
         <main className="txn-results">
           <h1>Great Success!</h1>
-          <h3>Go <Link href="/">home</Link> or <Link href="/mint">create more</Link></h3>
-          <p>For future reference, here are the transactions that happened on the block chain</p>
+          <h3>Go <Link href="/">home</Link> or <Link href="/create">create more</Link></h3>
+          <p>For future reference, here are the transactions that happened on the block chain:</p>
           <HashLinks />
         </main>
         : null
