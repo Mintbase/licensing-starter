@@ -13,7 +13,7 @@ export const CreateMenu = () => {
       <Link href="/manage">Manage</Link>
       <span>Profile</span>
       <Link href="/earnings">Earnings</Link>
-      <Link href="/ramp">Cash Out</Link>
+      {/* <Link href="/ramp">Cash Out</Link> */}
       <Link href="/settings">Settings</Link>
     </div>
   )

@@ -1,6 +1,7 @@
 import { useFormFields, FormFields } from "@/hooks/useFormFields";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
-import { useRDF, RDF } from "radix-declarative-form";
+import { RDF } from "radix-declarative-form/lib/cjs/RDF";
+import { useRDF } from "radix-declarative-form/lib/cjs/useRDF";
 
 export const MintingForm = () => {
   const { fields } = useFormFields();

@@ -1,8 +1,6 @@
-import { RDFField } from "radix-declarative-form";
+import type { RDFField } from "radix-declarative-form";
 import { useNearPrice } from '@mintbase-js/react';
 import { accountExists } from '@mintbase-js/rpc';
-
-import { parseUsableBasisPointAdjustedRoyalty } from "./useFormSubmit";
 
 export type FormFields = {
   title: string;
