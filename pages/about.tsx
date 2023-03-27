@@ -19,7 +19,7 @@ export default function About() {
         <div className="hero">
           <div className="hero-center">
             <h1>About</h1>
-            <h3>Web3 Stock or 3ST for short, is a creative licensing product demonstration.</h3>
+            <h3>Web3 Stock or SLiC for short, is a creative licensing product demonstration.</h3>
             </div>
         </div>
         <div className="about-body">

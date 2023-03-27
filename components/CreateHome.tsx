@@ -9,7 +9,7 @@ export const CreateHome = () => {
   return (
     <div className="create dashboard">
       <h1>Create</h1>
-      <p>Welcome to the 3ST creator dashboard. New here? <a href="#">Check out some tips</a></p>
+      <p>Welcome to the SLiC creator dashboard. New here? <a href="#">Check out some tips</a></p>
       <br />
       <div className="stats-ctas">
         <Link href="/mint" className="button-cta">
