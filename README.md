@@ -7,7 +7,7 @@ A starting point for creating an image licensing platform that runs on Mintbase 
 # What's next: Mintbase Features)
 
 ### Fiat Payments
-**Mintbase will provide this feature via its platform.**
+**Mintbase will provide this feature via its platform/APIs.**
 
 License holders will be able to pay aquisition fees in USD using Mintbase platform powered by Stripe.
 
@@ -18,6 +18,11 @@ License holders will be able to pay aquisition fees in USD using Mintbase platfo
 If collaborators or other royalty holders are not using a NEAR wallet yet, creators and publishers will be able to add them using an email or social media contact.
 
 Payments are automatically streamed to a custodial address where they will remain for future claims.
+
+### Core/Ongoing Improvements
+**Mintbase will provide this feature via its platform/APIs.**
+
+Transaction result captures are currently implemented in this demo. They will be abstracted away into the platform by the Mintbase team in the Near future.
 
 
 # What's next: SLiC Features
