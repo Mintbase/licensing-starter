@@ -4,7 +4,7 @@ A SLiC Grant Project Head Start
 
 A starting point for creating an image licensing platform that runs on Mintbase NFT infrastructure and open source components.
 
-# What's next: Mintbase Features)
+# What's next: Mintbase Features
 
 ### Fiat Payments
 **Mintbase will provide this feature via its platform/APIs.**
