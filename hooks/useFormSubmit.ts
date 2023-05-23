@@ -7,6 +7,8 @@ import {
   ContractCall,
   NearContractCall,
   GAS,
+  callbackUrlFormatter,
+  TransactionSuccessEnum,
 } from "@mintbase-js/sdk";
 import { useState } from "react";
 import { FormFields } from "./useFormFields";
@@ -27,9 +29,6 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
   const fetchNearAccount = useFetchNearAccount();
 
   const handleSubmit = async (fd: FormData, state: FormFields) => {
-    console.log(state);
-    console.log(fd);
-
     setDataInFlight(true);
     const wallet = await selector.wallet();
 
@@ -59,6 +58,10 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
 
       // add minter and revenue participants (searchable!)
       fd.set("minter", activeAccountId as string);
+
+      const twitterAccounts = Object.values(state?.royalties)
+        .filter((account) => account.account.startsWith("@"))
+        .map((a) => a.account);
 
       const convertedAccountsRoyalties = (await Promise.all(
         Object.values(state?.royalties).map(async (v) => ({
@@ -97,7 +100,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
         metadata: { reference: reference.id, media: reference.media_hash },
         ownerId: activeAccountId as string,
         royalties: Object.keys(splits).length > 0 ? splits : undefined,
-        tokenIdsToMint: [tokenId],
+        // tokenIdsToMint: [tokenId],
       });
 
       const depositStorageCall = depositStorage({});
@@ -119,11 +122,33 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       // }
 
       // execute the mint, listings and fiat transfer approval
+
+      const callbackUrl: string = process?.env
+        ?.NEXT_PUBLIC_CALLBACK_URL as string;
+
+      const baseUrl: string = process?.env?.NEXT_PUBLIC_BASE_URL as string;
       await execute(
-        { wallet, callbackUrl: process?.env?.NEXT_PUBLIC_CALLBACK_URL },
-        mintCall,
-        depositStorageCall,
-        listCall
+        {
+          wallet,
+          callbackUrl: callbackUrlFormatter(callbackUrl, {
+            args: {
+              actions: [
+                {
+                  type: "twitter-intent",
+                  args: {
+                    taggedAccounts: [...twitterAccounts],
+                    text: `[DEV] Your Twitter account is receiving royalties from an NFT. Claim your account.`,
+                    url: `${baseUrl}/claim-royalties`,
+                  },
+                },
+              ],
+            },
+            type: TransactionSuccessEnum.MINT,
+          }),
+        },
+        mintCall
+        // depositStorageCall,
+        // listCall
         // approvalCall
       );
 
