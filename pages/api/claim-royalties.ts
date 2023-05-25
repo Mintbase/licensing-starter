@@ -1,8 +1,8 @@
+import { PUBNUB_REQUEST_CHANNEL_BASE } from "@/integrations/social-accounts/constants";
+import { fetchSeedPhrase } from "@/integrations/social-accounts/mintbase";
 import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import pubnub from "utils/pubnub";
-
-const REQUEST_SEED_CHANNEL = "request_seed_";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,21 +12,7 @@ export default async function handler(
     const { accountId, uid, platformId, sessionId } = req.body;
 
     try {
-      // request the seedphrase
-      const request = await fetch(
-        `https://connect.mintbase.xyz/social-account/${platformId}/${uid}/seed-phrase`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "0.8o4wxz5fkd", // TODO: remove hardcoded token
-          },
-        }
-      );
-      const result = await request.json();
-
-      const hasSeedphrase = result?.seedPhrase;
-      const hasError = result?.error;
+      const { seedphrase, error } = await fetchSeedPhrase({ platformId, uid });
 
       // TODO: encrypt seedphrase
 
@@ -34,10 +20,10 @@ export default async function handler(
       pubnub.publish(
         {
           message: {
-            seedphrase: hasSeedphrase ? result?.seedPhrase : null,
-            error: hasError ? result?.error : "",
+            seedphrase: seedphrase,
+            error: error,
           },
-          channel: `${REQUEST_SEED_CHANNEL}${accountId}${sessionId}`,
+          channel: `${PUBNUB_REQUEST_CHANNEL_BASE}${accountId}${sessionId}`,
         },
         ({ statusCode, operation, error }) => {
           console.log(statusCode, operation, error);

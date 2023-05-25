@@ -1,51 +1,41 @@
-import Head from "next/head";
 import { Footer } from "@/components/Footer";
-import { useEffect, useMemo, useState } from "react";
+import { PUBNUB_REQUEST_CHANNEL_BASE } from "@/integrations/social-accounts/constants";
+import Head from "next/head";
+import Link from "next/link";
+import { useEffect, useMemo } from "react";
 import pubnub from "utils/pubnub";
 import { v4 as uuid } from "uuid";
-import Link from "next/link";
-
-const REQUEST_SEED_CHANNEL = "request_seed_";
 
 export default function ClaimRoyalties() {
   const sessionId = useMemo(() => {
     return uuid();
   }, []);
 
-  console.log(sessionId)
-
   useEffect(() => {
     pubnub.addListener({
       message: async (event) => {
-        if (event.channel === `${REQUEST_SEED_CHANNEL}${sessionId}`) {
+        if (event.channel === `${PUBNUB_REQUEST_CHANNEL_BASE}${sessionId}`) {
           const { accountId, uid, platformId } = event.message;
 
-          console.log("MESSAGE");
-          console.log(event.message);
-
-          const request = await fetch("/api/claim-royalties", {
+          fetch("/api/claim-royalties", {
             method: "POST",
             body: JSON.stringify({ accountId, uid, platformId, sessionId }),
             headers: {
               "Content-Type": "application/json",
             },
           });
-
-          const result = await request.json();
         }
       },
     });
 
-    pubnub.subscribe({ channels: [`${REQUEST_SEED_CHANNEL}${sessionId}`] });
+    pubnub.subscribe({
+      channels: [`${PUBNUB_REQUEST_CHANNEL_BASE}${sessionId}`],
+    });
 
     return () => {
       pubnub.unsubscribeAll();
     };
   }, []);
-
-  //   useEffect(() => {
-  //     openPopup();
-  //   }, [sessionId]);
 
   const openPopup = () => {
     const iframeUrlSessionId = `https://sdk-iframe.herokuapp.com/royalties?uuid=${sessionId}`;
