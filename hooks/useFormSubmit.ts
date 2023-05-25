@@ -1,13 +1,24 @@
 import { useWallet } from "@mintbase-js/react";
-import { mint, depositStorage, list, execute, ContractCall, NearContractCall, GAS } from "@mintbase-js/sdk";
+import {
+  mint,
+  depositStorage,
+  list,
+  execute,
+  ContractCall,
+  NearContractCall,
+  GAS,
+  callbackUrlFormatter,
+  TransactionSuccessEnum,
+} from "@mintbase-js/sdk";
 import { useState } from "react";
 import { FormFields } from "./useFormFields";
-import { utils } from 'near-api-js';
+import { utils } from "near-api-js";
+import { useFetchNearAccount } from "./social-accounts/useFetchNearAccountId";
 
 type UseFormSubmitReturn = {
-  isInFlight: boolean
-  handleSubmit: (fd: FormData, state: FormFields) => Promise<void>
-}
+  isInFlight: boolean;
+  handleSubmit: (fd: FormData, state: FormFields) => Promise<void>;
+};
 
 type Reference = { id: string; media_hash: string };
 
@@ -15,6 +26,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
   const contract = process?.env?.NEXT_PUBLIC_CONTRACT_ADDRESS;
   const { selector, activeAccountId } = useWallet();
   const [isInFlight, setDataInFlight] = useState(false);
+  const fetchNearAccount = useFetchNearAccount();
 
   const handleSubmit = async (fd: FormData, state: FormFields) => {
     setDataInFlight(true);
@@ -25,9 +37,9 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       const tokenId = Number(Math.random().toString().slice(2, 19));
 
       // set the photographer as an attribute
-      fd.set("contractId", contract || '');
+      fd.set("contractId", contract || "");
       fd.set("tokenId", tokenId.toString());
-      fd.set("addToSearch", 'true');
+      fd.set("addToSearch", "true");
       fd.set(
         "attributes",
         JSON.stringify([
@@ -40,32 +52,46 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
             trait_type: "category",
             display_type: "string",
             value: state.category,
-          }
+          },
         ])
       );
 
       // add minter and revenue participants (searchable!)
       fd.set("minter", activeAccountId as string);
 
+      const twitterAccounts = Object.values(state?.royalties)
+        .filter((account) => account.account.startsWith("@"))
+        .map((a) => a.account);
+
+      const convertedAccountsRoyalties = (await Promise.all(
+        Object.values(state?.royalties).map(async (v) => ({
+          account: v.account.startsWith("@")
+            ? await fetchNearAccount(v.account)
+            : v.account,
+          percent: v.percent,
+        }))
+      )) as {
+        account: string;
+        percent: string | number;
+      }[];
+
       // filter out usable splits
       const { splits, percentage } = parseUsableBasisPointAdjustedRoyalty(
-        (state?.royalties || [])
-      )
+        convertedAccountsRoyalties || []
+      );
 
       // no need to actually royalties
       if (Object.keys(splits).length) {
         fd.set("revenueSharing", JSON.stringify(splits));
-        fd.delete('royalties');
+        fd.delete("royalties");
       }
 
       // create the post request
-      const postRequest = await fetch("https://ar.mintbase.xyz/reference",
-        {
-          method: "POST",
-          headers: { "mb-api-key": "licensing-example" },
-          body: fd,
-        }
-      );
+      const postRequest = await fetch("https://ar.mintbase.xyz/reference", {
+        method: "POST",
+        headers: { "mb-api-key": "licensing-example" },
+        body: fd,
+      });
 
       const reference: Reference = await postRequest.json();
 
@@ -74,7 +100,7 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
         metadata: { reference: reference.id, media: reference.media_hash },
         ownerId: activeAccountId as string,
         royalties: Object.keys(splits).length > 0 ? splits : undefined,
-        tokenIdsToMint: [tokenId],
+        // tokenIdsToMint: [tokenId],
       });
 
       const depositStorageCall = depositStorage({});
@@ -96,10 +122,33 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
       // }
 
       // execute the mint, listings and fiat transfer approval
-      await execute({ wallet, callbackUrl: process?.env?.NEXT_PUBLIC_CALLBACK_URL },
-        mintCall,
-        depositStorageCall,
-        listCall,
+
+      const callbackUrl: string = process?.env
+        ?.NEXT_PUBLIC_CALLBACK_URL as string;
+
+      const baseUrl: string = process?.env?.NEXT_PUBLIC_BASE_URL as string;
+      await execute(
+        {
+          wallet,
+          callbackUrl: callbackUrlFormatter(callbackUrl, {
+            args: {
+              actions: [
+                {
+                  type: "twitter-intent",
+                  args: {
+                    taggedAccounts: [...twitterAccounts],
+                    text: `[DEV] Your Twitter account is receiving royalties from an NFT. Claim your account.`,
+                    url: `${baseUrl}/claim-royalties`,
+                  },
+                },
+              ],
+            },
+            type: TransactionSuccessEnum.MINT,
+          }),
+        },
+        mintCall
+        // depositStorageCall,
+        // listCall
         // approvalCall
       );
 
@@ -112,60 +161,62 @@ export const useFormSubmit = (): UseFormSubmitReturn => {
 
   return {
     handleSubmit,
-    isInFlight
+    isInFlight,
   };
-}
+};
 
 export const parseUsableBasisPointAdjustedRoyalty = (
-  royalties: { account: string, percent: string | number }[] = [],
+  royalties: { account: string; percent: string | number }[] = []
   // minter: string,
   // needsRoyaltyAdjusted: boolean = false
 ): {
-  splits: Record<string, number>,
-  percentage: number
+  splits: Record<string, number>;
+  percentage: number;
 } => {
   // early bail out
   if (!royalties.length) {
     return {
       splits: {},
-      percentage:0
-    }
+      percentage: 0,
+    };
   }
 
   // parse usable data with variables as required
   // const basisMultiplier = needsRoyaltyAdjusted ? 2 : 1;
   const usableSplits = royalties
-    .filter(entry => entry.account > '' && Number(entry.percent) > 0)
-    .map(entry => ({
+    .filter((entry) => entry.account > "" && Number(entry.percent) > 0)
+    .map((entry) => ({
       account: entry.account,
       // percent: Number(entry.percent),
       tenths: Number(entry.percent) / 100,
-      basis: Number(entry.percent) * 100 // * basisMultiplier
-    }))
+      basis: Number(entry.percent) * 100, // * basisMultiplier
+    }));
 
-    // NOTE: this is no longer needed, mbjs does it now.
-    const percentage = usableSplits.reduce((sum, sp) => sum + sp.basis, 0)
-    const splits: Record<string, number> = usableSplits.reduce((build, sp) => ({
+  // NOTE: this is no longer needed, mbjs does it now.
+  const percentage = usableSplits.reduce((sum, sp) => sum + sp.basis, 0);
+  const splits: Record<string, number> = usableSplits.reduce(
+    (build, sp) => ({
       ...build,
       // from the percentage, recompute usable split as % of the total so it adds up to 10k
       // [sp.account]: Math.floor((sp.basis * 10_000) / percentage)
-      [sp.account]: sp.tenths
-    }), {})
+      [sp.account]: sp.tenths,
+    }),
+    {}
+  );
 
+  // // compute sum and adjust the first split upward as needed
+  // const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
+  // const gap = 10_000 - basisPointsSum
 
-    // // compute sum and adjust the first split upward as needed
-    // const basisPointsSum = Object.values(splits).reduce((sum, val) => sum += val, 0)
-    // const gap = 10_000 - basisPointsSum
+  // // fill any gaps due to rounding
+  // if (gap > 0) {
+  //   const firstKey = Object.keys(splits)[0]
+  //   splits[firstKey] += gap
+  // }
 
-    // // fill any gaps due to rounding
-    // if (gap > 0) {
-    //   const firstKey = Object.keys(splits)[0]
-    //   splits[firstKey] += gap
-    // }
-
-    return {
-      splits,
-      // not needed
-      percentage //: percentage / basisMultiplier  // re-adjust for royalty total
-    };
-}
+  return {
+    splits,
+    // not needed
+    percentage, //: percentage / basisMultiplier  // re-adjust for royalty total
+  };
+};
